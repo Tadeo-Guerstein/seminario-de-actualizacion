@@ -1,6 +1,6 @@
 {
-    "host": "localhost",
-    "user": "root",
-    "password": "",
-    "database": "diagnostico_seminario"
+  "host": "localhost",
+  "user": "root",
+  "password": "",
+  "database": "diagnostico_seminario"
 }
