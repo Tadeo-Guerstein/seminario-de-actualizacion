@@ -19,13 +19,6 @@ export default [
       'no-eval': 'error',
       'no-new-wrappers': 'warn',
       'no-throw-literal': 'warn',
-      'func-style': [
-        'error',
-        'expression',
-        {
-          'allowArrowFunctions': true
-        }
-      ],
       'no-console': [
         'warn',
         {
