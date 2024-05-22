@@ -1,6 +1,10 @@
 const URL = 'http://localhost:8080'
 const tableContainer = document.querySelector('.table-responsive')
+const select = document.querySelector('select')
 const emptyText = document.getElementById('empty-text')
+const form = document.querySelector('form')
+const inputGroup = document.getElementById('grupo')
+const tbody = document.querySelector('tbody')
 
 async function getAcciones() {
   const response = await fetch(`${URL}/actions`)
@@ -17,13 +21,27 @@ async function getGrupos() {
 }
 
 async function handleOnLoad() {
-  const acciones = await getAcciones()
-  const grupos = await getGrupos()
+  const { data: acciones } = await getAcciones()
+  const { data: grupos } = await getGrupos()
   if (acciones.length > 0) {
-    console.log('acciones', acciones)
+    acciones.forEach((i) => {
+      const option = document.createElement('option')
+      option.value = i.id
+      option.text = i.name.toUpperCase()
+      select.add(option)
+    })
   }
   if (grupos.length > 0) {
-    console.log('grupos', grupos)
+    grupos.forEach((i) => {
+      const tBodyRow = tbody.insertRow()
+      const tBodyCellId = tBodyRow.insertCell()
+      const tBodyCellName = tBodyRow.insertCell()
+      const tBodyCellActionName = tBodyRow.insertCell()
+
+      tBodyCellId.innerText = i.id
+      tBodyCellName.innerText = i.name
+      tBodyCellActionName.innerText = i.actionName || 'Sin acción'
+    })
     return
   }
   const span = document.createElement('span')
@@ -32,4 +50,16 @@ async function handleOnLoad() {
   tableContainer.appendChild(span)
 }
 
+async function handleOnSubmit() {
+  const name = inputGroup.value
+  const optionSelected = select.value
+  await fetch(`${URL}/groups`, {
+    method: 'POST',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nombre: name, idAccion: parseInt(optionSelected) })
+  })
+}
+
 document.onload = handleOnLoad()
+form.onsubmit = handleOnSubmit

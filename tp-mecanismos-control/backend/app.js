@@ -22,9 +22,26 @@ app.get('/users', async (req, res) => {
 app.get('/groups', async (req, res) => {
   try {
     const connection = await mysql.createConnection(database)
-    const [groups] = await connection.execute('SELECT * from group_type')
+    const [groups] = await connection.execute('SELECT * from group_type ')
+    const [groupsActions] = await connection.execute(
+      'SELECT group_type.id, group_type.name, action.name AS actionName from group_type INNER JOIN group_action ON group_action.id_group = group_type.id INNER JOIN action ON group_action.id_action = action.id'
+    )
+
+    const newGroups = [...groups]
+
+    newGroups.forEach((groupAction) => {
+      const foundGroup = groupsActions.find((group) => {
+        return groupAction.id === group.id
+      })
+      groupAction.actionName = foundGroup?.actionName
+    })
+
+    newGroups.sort((a, b) => {
+      return a.id - b.id
+    })
+
     connection.end()
-    res.status(200).send({ data: groups })
+    res.status(200).send({ data: newGroups })
   } catch (error) {
     console.info(error)
   }
@@ -52,6 +69,28 @@ app.post('/actions', async (req, res) => {
 
     const connection = await mysql.createConnection(database)
     await connection.execute('INSERT INTO action (name) VALUES (?)', [nombre])
+    connection.end()
+    res.status(200).send({ data: 'ok' })
+  } catch (error) {
+    console.info(error)
+  }
+})
+
+app.post('/groups', async (req, res) => {
+  try {
+    const { body } = req
+    const { nombre, idAccion } = body
+
+    if (!nombre) {
+      return res.status(400).send({ message: 'nombre no puede estar vacío' })
+    }
+
+    const connection = await mysql.createConnection(database)
+    const [grupo] = await connection.execute('INSERT INTO group_type (name) VALUES (?)', [nombre])
+    if (idAccion !== 0) {
+      const { insertId } = { ...grupo }
+      await connection.execute('INSERT INTO group_action (id_action, id_group) VALUES (?, ?)', [idAccion, insertId])
+    }
     connection.end()
     res.status(200).send({ data: 'ok' })
   } catch (error) {
