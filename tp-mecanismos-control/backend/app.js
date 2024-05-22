@@ -41,6 +41,24 @@ app.get('/actions', async (req, res) => {
   }
 })
 
+app.post('/actions', async (req, res) => {
+  try {
+    const { body } = req
+    const { nombre } = body
+
+    if (!nombre) {
+      return res.status(400).send({ message: 'nombre no puede estar vacío' })
+    }
+
+    const connection = await mysql.createConnection(database)
+    await connection.execute('INSERT INTO action (name) VALUES (?)', [nombre])
+    connection.end()
+    res.status(200).send({ data: 'ok' })
+  } catch (error) {
+    console.info(error)
+  }
+})
+
 app.listen(PORT, () => {
   console.info(`Your app is listening in http://localhost:${PORT}`)
 })
