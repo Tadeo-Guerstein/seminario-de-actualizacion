@@ -1,14 +1,10 @@
-const formatUsers = (users, usersGroups, usersGroupsActions) => {
+const formatUsers = (users, usersGroups) => {
   const newUsers = [...users]
   newUsers.forEach((usersGrouped) => {
-    const foundUsersActions = usersGroupsActions.find((user) => {
-      return usersGrouped.id === user.id
-    })
     const foundUsersGroup = usersGroups.find((user) => {
       return usersGrouped.id === user.id
     })
-    usersGrouped.actionName = foundUsersActions?.actionName
-    usersGrouped.groupName = foundUsersGroup?.groupName
+    usersGrouped.groups = foundUsersGroup?.groups
   })
 
   newUsers.sort((a, b) => {
@@ -35,4 +31,24 @@ const formatGroups = (groups, groupsActions) => {
   return newGroups
 }
 
-module.exports = { formatUsers, formatGroups }
+const addGroupsTogether = (groups) => {
+  const newGroups = [...groups]
+
+  groups.forEach((i) => {
+    const findSameItem = newGroups.find((auxItem) => {
+      return auxItem.id === i.id
+    })
+    if (findSameItem) {
+      if (findSameItem.groups && findSameItem.groups.length > 0) {
+        findSameItem.groups.push(i.groupName)
+        return
+      }
+      findSameItem.groups = [i.groupName]
+      return
+    }
+  })
+
+  return newGroups
+}
+
+module.exports = { formatUsers, formatGroups, addGroupsTogether }

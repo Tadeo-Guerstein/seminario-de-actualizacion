@@ -18,62 +18,117 @@ module.exports = {
     }
   },
   getUsers: async () => {
-    const [data] = await connection.execute('SELECT * from user ORDER BY user.id ASC')
-    return data
+    try {
+      const [data] = await connection.execute('SELECT * from user ORDER BY user.id ASC')
+      return data
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   getUsersGroup: async () => {
-    const [data] = await connection.execute(
-      `
+    try {
+      const [data] = await connection.execute(
+        `
           SELECT user.id, user.name, group_type.name AS groupName from user
           INNER JOIN group_user ON group_user.id_user = user.id
           INNER JOIN group_type ON group_type.id = group_user.id_group
         `
-    )
-    return data
+      )
+      return data
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   getUsersGroupActions: async () => {
-    const [data] = await connection.execute(
-      `
+    try {
+      const [data] = await connection.execute(
+        `
           SELECT user.id, user.name, group_type.name AS groupName, action.name AS actionName from user
           INNER JOIN group_user ON group_user.id_user = user.id 
           INNER JOIN group_type ON group_type.id = group_user.id_group
           INNER JOIN group_action ON group_action.id_group = group_type.id
           INNER JOIN action ON group_action.id_action = action.id
         `
-    )
-    return data
+      )
+      return data
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   getGroups: async () => {
-    const [data] = await connection.execute('SELECT * from group_type')
-    return data
+    try {
+      const [data] = await connection.execute('SELECT * from group_type')
+      return data
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   getGroupsActions: async () => {
-    const [data] = await connection.execute(
-      `
+    try {
+      const [data] = await connection.execute(
+        `
           SELECT group_type.id, group_type.name, action.name AS actionName from group_type 
           INNER JOIN group_action ON group_action.id_group = group_type.id 
           INNER JOIN action ON group_action.id_action = action.id
         `
-    )
-    return data
+      )
+      return data
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   getActions: async () => {
-    const [data] = await connection.execute('SELECT * from action')
-    return data
+    try {
+      const [data] = await connection.execute('SELECT * from action')
+      return data
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   setUser: async (nombre) => {
-    return await connection.execute('INSERT INTO user (name) VALUES (?)', [nombre])
+    try {
+      return await connection.execute('INSERT INTO user (name) VALUES (?)', [nombre])
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   setUserGroups: async (idUser, idGroup) => {
-    await connection.execute('INSERT INTO group_user (id_user, id_group) VALUES (?, ?)', [idUser, idGroup])
+    try {
+      await connection.execute('INSERT INTO group_user (id_user, id_group) VALUES (?, ?)', [idUser, idGroup])
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   setGroups: async (nombre) => {
-    return await connection.execute('INSERT INTO group_type (name) VALUES (?)', [nombre])
+    try {
+      return await connection.execute('INSERT INTO group_type (name) VALUES (?)', [nombre])
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   setGroupsActions: async (idAccion, idGroup) => {
-    await connection.execute('INSERT INTO group_action (id_action, id_group) VALUES (?, ?)', [idAccion, idGroup])
+    try {
+      await connection.execute('INSERT INTO group_action (id_action, id_group) VALUES (?, ?)', [idAccion, idGroup])
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   },
   setActions: async (nombre) => {
-    await connection.execute('INSERT INTO action (name) VALUES (?)', [nombre])
+    try {
+      await connection.execute('INSERT INTO action (name) VALUES (?)', [nombre])
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   }
 }

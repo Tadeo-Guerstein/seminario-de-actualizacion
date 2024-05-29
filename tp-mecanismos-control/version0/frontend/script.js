@@ -1,6 +1,7 @@
 const URL = 'http://localhost:8080'
 const tableContainer = document.querySelector('.table-responsive')
 const emptyText = document.getElementById('empty-text')
+const groupSelected = document.getElementById('selected')
 const select = document.querySelector('select')
 const form = document.querySelector('form')
 const tbody = document.querySelector('tbody')
@@ -26,7 +27,7 @@ async function handleOnLoad() {
   if (grupos.length > 0) {
     grupos.forEach((i) => {
       const option = document.createElement('option')
-      option.value = i.id
+      option.value = JSON.stringify(i)
       option.text = i.name.toUpperCase()
       select.add(option)
     })
@@ -37,12 +38,10 @@ async function handleOnLoad() {
       const tBodyCellId = tBodyRow.insertCell()
       const tBodyCellName = tBodyRow.insertCell()
       const tBodyCellGroup = tBodyRow.insertCell()
-      const tBodyCellActionName = tBodyRow.insertCell()
 
       tBodyCellId.innerText = i.id
       tBodyCellName.innerText = i.name
-      tBodyCellGroup.innerText = i.groupName || 'Sin grupo'
-      tBodyCellActionName.innerText = i.actionName || 'Sin acción'
+      tBodyCellGroup.innerText = i.groups?.join?.(', ') || 'Sin grupo'
     })
     return
   }
@@ -55,16 +54,40 @@ async function handleOnLoad() {
 function handleOnSubmit(event) {
   // event.preventDefault()
   const name = inputUser.value
-  const optionSelected = select.value
-  // console.log('name', name)
-  // console.log('optionSelected', optionSelected)
+  const optionsSelected = [...groupSelected.children].map((i) => {
+    return parseInt(i.id)
+  })
   fetch(`${URL}/users`, {
     method: 'POST',
     mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nombre: name, idGrupo: parseInt(optionSelected) })
+    body: JSON.stringify({ nombre: name, grupos: optionsSelected })
   })
+}
+
+function handleOnClickButton(event) {
+  const { target } = event
+  groupSelected.removeChild(target)
+}
+
+function handleOnSelectChange() {
+  const optionSelected = JSON.parse(select.value)
+  const button = document.createElement('button')
+  if (!optionSelected) return
+
+  const hasSelected = [...groupSelected.children].some((i) => {
+    return parseInt(i.id) === optionSelected.id
+  })
+  if (!hasSelected) {
+    button.className = 'btn btn-danger mb-3 ms-1'
+    button.innerText = optionSelected.name
+    button.id = optionSelected.id
+    button.value = JSON.stringify(optionSelected)
+    button.onclick = handleOnClickButton
+    groupSelected.appendChild(button)
+  }
 }
 
 document.onload = handleOnLoad()
 form.onsubmit = handleOnSubmit
+select.onchange = handleOnSelectChange
