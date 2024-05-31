@@ -1,13 +1,13 @@
 const SQL = require('../sql')
-const { formatGroups } = require('../utils')
+const { formatGroups, addUsersTogether } = require('../utils')
 
 const RouteGroups = async (req, res) => {
   try {
     await SQL.initConnection().then()
     const groups = await SQL.getGroups()
-    const groupsActions = await SQL.getGroupsActions()
+    const groupsUsers = await SQL.getGroupUsers()
 
-    const newGroups = formatGroups(groups, groupsActions)
+    newGroups = formatGroups(groups, addUsersTogether(groupsUsers))
 
     await SQL.closeConnection()
     res.status(200).send({ data: newGroups })

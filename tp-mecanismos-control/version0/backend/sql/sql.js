@@ -41,6 +41,21 @@ module.exports = {
       return [{ data: 'error', message: error }]
     }
   },
+  getGroupUsers: async () => {
+    try {
+      const [data] = await connection.execute(
+        `
+          SELECT group_type.id, group_type.name, user.name AS username from group_type
+          INNER JOIN group_user ON group_user.id_group = group_type.id
+          INNER JOIN user ON user.id = group_user.id_user
+        `
+      )
+      return data
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
+  },
   getUsersGroupActions: async () => {
     try {
       const [data] = await connection.execute(
@@ -109,7 +124,7 @@ module.exports = {
   },
   setGroups: async (nombre) => {
     try {
-      return await connection.execute('INSERT INTO group_type (name) VALUES (?)', [nombre])
+      await connection.execute('INSERT INTO group_type (name) VALUES (?)', [nombre])
     } catch (error) {
       console.info('error', error)
       return [{ data: 'error', message: error }]

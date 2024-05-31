@@ -1,17 +1,9 @@
 const URL = 'http://localhost:8080'
 const tableContainer = document.querySelector('.table-responsive')
-const select = document.querySelector('select')
 const emptyText = document.getElementById('empty-text')
 const form = document.querySelector('form')
 const inputGroup = document.getElementById('grupo')
 const tbody = document.querySelector('tbody')
-
-async function getAcciones() {
-  const response = await fetch(`${URL}/actions`)
-  if (response.status === 200) {
-    return await response.json()
-  }
-}
 
 async function getGrupos() {
   const response = await fetch(`${URL}/groups`)
@@ -21,16 +13,7 @@ async function getGrupos() {
 }
 
 async function handleOnLoad() {
-  const { data: acciones } = await getAcciones()
   const { data: grupos } = await getGrupos()
-  if (acciones.length > 0) {
-    acciones.forEach((i) => {
-      const option = document.createElement('option')
-      option.value = i.id
-      option.text = i.name.toUpperCase()
-      select.add(option)
-    })
-  }
   if (grupos.length > 0) {
     grupos.forEach((i) => {
       const tBodyRow = tbody.insertRow()
@@ -40,7 +23,7 @@ async function handleOnLoad() {
 
       tBodyCellId.innerText = i.id
       tBodyCellName.innerText = i.name
-      tBodyCellActionName.innerText = i.actionName || 'Sin acción'
+      tBodyCellActionName.innerText = i.users?.join(', ') || 'Sin usuarios asignados'
     })
     return
   }
