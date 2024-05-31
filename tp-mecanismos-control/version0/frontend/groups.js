@@ -35,12 +35,11 @@ async function handleOnLoad() {
 
 async function handleOnSubmit() {
   const name = inputGroup.value
-  const optionSelected = select.value
   await fetch(`${URL}/groups`, {
     method: 'POST',
     mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nombre: name, idAccion: parseInt(optionSelected) })
+    body: JSON.stringify({ nombre: name })
   })
 }
 
