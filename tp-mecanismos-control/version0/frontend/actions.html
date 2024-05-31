@@ -44,7 +44,15 @@
         <input type="text" class="form-control" id="accion" placeholder="Nombre acción" />
       </div>
       <div class="col-auto">
+        <select class="form-select" aria-label="Default select example">
+          <option selected value="0">Sin grupo</option>
+        </select>
+      </div>
+      <div class="col-auto">
         <button type="submit" class="btn btn-primary mb-3">Agregar</button>
+      </div>
+      <div class="col-auto">
+        <div id="selected"></div>
       </div>
     </form>
 
@@ -54,6 +62,7 @@
           <tr>
             <th scope="col">ID</th>
             <th scope="col">Nombre</th>
+            <th scope="col">Grupos</th>
           </tr>
         </thead>
         <tbody></tbody>
