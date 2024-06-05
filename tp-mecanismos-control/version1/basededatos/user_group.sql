@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-05-2024 a las 22:51:05
+-- Tiempo de generación: 05-06-2024 a las 23:48:55
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -21,6 +21,64 @@ SET time_zone = "+00:00";
 -- Base de datos: `user_group`
 --
 
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetActions` ()   BEGIN
+    SELECT * from action ORDER BY action.id ASC;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetActionsGroup` ()   BEGIN
+    SELECT action.id, action.name, group_type.name AS groupName from action
+          INNER JOIN group_action ON group_action.id_action = action.id
+          INNER JOIN group_type ON group_type.id = group_action.id_group;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetGroups` ()   BEGIN
+    SELECT * from group_type;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetGroupUsers` ()   BEGIN
+    SELECT group_type.id, group_type.name, user.name AS username from group_type
+          INNER JOIN group_user ON group_user.id_group = group_type.id
+          INNER JOIN user ON user.id = group_user.id_user;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetUsers` ()   BEGIN
+   SELECT * from user ORDER BY user.id ASC;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetUsersGroup` ()   BEGIN
+    SELECT user.id, user.name, group_type.name AS groupName from user
+          INNER JOIN group_user ON group_user.id_user = user.id
+          INNER JOIN group_type ON group_type.id = group_user.id_group;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SetActionGroups` (IN `idAction` INT, IN `idGroup` INT)   BEGIN
+    INSERT INTO group_action (id_action, id_group) VALUES (idAction, idGroup);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SetActions` (IN `nombre` VARCHAR(100), OUT `lastId` INT)   BEGIN
+    INSERT INTO action (name) VALUES (nombre);
+    SET lastId = LAST_INSERT_ID();
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SetGroups` (IN `nombre` VARCHAR(100))   BEGIN
+    INSERT INTO group_type (name) VALUES (nombre);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SetUser` (IN `userName` VARCHAR(100), OUT `lastId` INT)   BEGIN
+    INSERT INTO user (name) VALUES (userName);
+    SET lastId = LAST_INSERT_ID();
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SetUserGroups` (IN `idUser` INT, IN `idGroup` INT)   BEGIN
+    INSERT INTO group_user (id_user, id_group) VALUES (idUser, idGroup);
+END$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -37,9 +95,15 @@ CREATE TABLE `action` (
 --
 
 INSERT INTO `action` (`id`, `name`) VALUES
+(7, 'Acción'),
+(5, 'actualizar usuarios'),
 (1, 'agregar usuarios'),
 (2, 'Eliminar usuarios'),
+(10, 'jkhjfkjfhk'),
+(8, 'Nueva accion'),
+(9, 'Otra nueva acción'),
 (3, 'preceptores'),
+(6, 'Remover usuarios'),
 (4, 'test');
 
 -- --------------------------------------------------------
@@ -62,7 +126,16 @@ INSERT INTO `group_action` (`id`, `id_action`, `id_group`) VALUES
 (1, 1, 1),
 (2, 2, 5),
 (3, 2, 7),
-(4, 4, 8);
+(4, 4, 8),
+(5, 6, 1),
+(6, 6, 4),
+(7, 6, 5),
+(8, 6, 6),
+(9, 8, 9),
+(10, 9, 1),
+(11, 9, 4),
+(12, 10, 9),
+(13, 10, 8);
 
 -- --------------------------------------------------------
 
@@ -81,6 +154,7 @@ CREATE TABLE `group_type` (
 
 INSERT INTO `group_type` (`id`, `name`) VALUES
 (8, 'dfaggsdf'),
+(9, 'directivos'),
 (4, 'egresados'),
 (2, 'estudiantes'),
 (6, 'grupo random'),
@@ -113,7 +187,23 @@ INSERT INTO `group_user` (`id`, `id_user`, `id_group`) VALUES
 (6, 10, 2),
 (7, 11, 2),
 (8, 12, 5),
-(9, 13, 8);
+(9, 13, 8),
+(10, 16, 1),
+(11, 16, 4),
+(12, 17, 1),
+(13, 17, 2),
+(18, 30, 1),
+(19, 31, 2),
+(20, 32, 1),
+(21, 32, 2),
+(22, 32, 4),
+(23, 33, 1),
+(24, 33, 2),
+(25, 33, 4),
+(26, 33, 5),
+(27, 34, 1),
+(28, 34, 2),
+(29, 34, 4);
 
 -- --------------------------------------------------------
 
@@ -135,12 +225,31 @@ INSERT INTO `user` (`id`, `name`) VALUES
 (10, 'asdasdsdgfdg'),
 (11, 'dfgdfgertry'),
 (12, 'ertgyhrthjdftyjk'),
+(31, 'estudiante'),
+(16, 'gdfdfgdgsrfsfgh'),
+(21, 'hfjhdghj'),
 (6, 'Katia'),
 (13, 'Kevin'),
+(17, 'kjdfgjkdfsjksgdfjkl'),
+(20, 'Martina'),
 (4, 'Matias'),
+(18, 'Meli'),
 (5, 'Nahuel'),
+(15, 'newTesting'),
+(27, 'Otro tadeo'),
+(28, 'Otro test'),
+(19, 'Pablito'),
+(34, 'pepe'),
+(32, 'p´weropweropwe'),
+(26, 'Silvia'),
+(22, 'tADE'),
 (1, 'Tadeo'),
+(23, 'tADEUS'),
 (8, 'Test'),
+(29, 'test mil'),
+(30, 'test mill uno'),
+(33, 'Test millon'),
+(14, 'testing'),
 (7, 'Yesica ');
 
 --
@@ -192,31 +301,31 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `action`
 --
 ALTER TABLE `action`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `group_action`
 --
 ALTER TABLE `group_action`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `group_type`
 --
 ALTER TABLE `group_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `group_user`
 --
 ALTER TABLE `group_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- Restricciones para tablas volcadas
