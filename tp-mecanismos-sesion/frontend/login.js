@@ -1,4 +1,3 @@
-const URL = 'http://localhost:8080'
 const checkbox = document.getElementById('showPassword')
 const password = document.getElementById('password')
 const username = document.getElementById('username')
@@ -14,7 +13,7 @@ function handleChangeCheckbox({ target: { checked } }) {
   password.setAttribute('type', 'password')
 }
 
-async function handleSubmit(event) {
+function handleSubmit(event) {
   event.preventDefault()
 
   const user = username.value
@@ -26,24 +25,8 @@ async function handleSubmit(event) {
     return
   }
 
-  const response = await fetch(`${URL}/register`, {
-    method: 'POST',
-    mode: 'cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: user, password: pass })
-  })
-
-  const data = await response.json()
-
-  if (response.status !== 200) {
-    password.className += ' border-danger'
-    username.className += ' border-danger'
-    errorLabelPass.innerText = data.message
-    errorLabelUser.innerText = data.message
-    return
-  }
-
-  window.location.href = './users.html'
+  console.log('pass', pass)
+  console.log('user', user)
 }
 
 function handleInputFocus() {

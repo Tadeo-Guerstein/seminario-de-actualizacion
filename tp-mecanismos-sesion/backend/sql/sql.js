@@ -57,23 +57,6 @@ module.exports = {
       return [{ data: 'error', message: error }]
     }
   },
-  getUsersGroupActions: async () => {
-    try {
-      const [data] = await connection.execute(
-        `
-          SELECT user.id, user.name, group_type.name AS groupName, action.name AS actionName from user
-          INNER JOIN group_user ON group_user.id_user = user.id 
-          INNER JOIN group_type ON group_type.id = group_user.id_group
-          INNER JOIN group_action ON group_action.id_group = group_type.id
-          INNER JOIN action ON group_action.id_action = action.id
-        `
-      )
-      return data
-    } catch (error) {
-      console.info('error', error)
-      return [{ data: 'error', message: error }]
-    }
-  },
   getGroups: async () => {
     try {
       const [response] = await connection.execute('CALL GetGroups()')
@@ -148,6 +131,23 @@ module.exports = {
     try {
       await connection.execute('CALL SetActions(?, @lastId)', [nombre])
       return await connection.execute('SELECT @lastId as lastId')
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
+  },
+  register: async (username, password) => {
+    try {
+      await connection.execute('INSERT INTO users_logged (username, password) VALUES (?, ?)', [username, password])
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
+  },
+  userExists: async (username) => {
+    try {
+      const [userExists] = await connection.execute('SELECT * FROM users_logged WHERE username = ?;', [username])
+      return userExists.length > 0
     } catch (error) {
       console.info('error', error)
       return [{ data: 'error', message: error }]
