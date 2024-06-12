@@ -5,5 +5,15 @@ const RouteGroup = require('./RouteGroup')
 const RouteUsers = require('./RouteUsers')
 const RouteUser = require('./RouteUser')
 const RouteRegister = require('./RouteRegister')
+const RouteLogin = require('./RouteLogin')
 
-module.exports = { RouteAction, RouteActions, RouteGroups, RouteGroup, RouteUsers, RouteUser, RouteRegister }
+module.exports = {
+  RouteAction,
+  RouteActions,
+  RouteGroups,
+  RouteGroup,
+  RouteUsers,
+  RouteUser,
+  RouteRegister,
+  RouteLogin
+}

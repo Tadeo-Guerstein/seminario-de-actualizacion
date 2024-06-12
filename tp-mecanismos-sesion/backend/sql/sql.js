@@ -152,5 +152,17 @@ module.exports = {
       console.info('error', error)
       return [{ data: 'error', message: error }]
     }
+  },
+  login: async (username, password) => {
+    try {
+      const [userExists] = await connection.execute('SELECT * FROM users_logged WHERE username = ? AND password = ?;', [
+        username,
+        password
+      ])
+      return userExists.length > 0
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
   }
 }
