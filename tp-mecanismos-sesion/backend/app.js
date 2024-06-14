@@ -10,7 +10,8 @@ const {
   RouteUser,
   RouteUsers,
   RouteRegister,
-  RouteLogin
+  RouteLogin,
+  RouteLogout
 } = require('./routes')
 
 app.use(cors())
@@ -24,6 +25,7 @@ app.post('/groups', RouteGroup)
 app.post('/users', RouteUser)
 app.post('/register', RouteRegister)
 app.post('/login', RouteLogin)
+app.delete('/logout', RouteLogout)
 
 app.listen(PORT, () => {
   console.info(`Your app is listening in http://localhost:${PORT}`)

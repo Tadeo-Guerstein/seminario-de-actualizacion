@@ -6,6 +6,7 @@ const select = document.querySelector('select')
 const form = document.querySelector('form')
 const tbody = document.querySelector('tbody')
 const inputUser = document.getElementById('username')
+const logout = document.getElementById('logout')
 
 async function getUsers() {
   const response = await fetch(`${URL}/users`)
@@ -88,6 +89,25 @@ function handleOnSelectChange() {
   }
 }
 
+async function handleOnClickLogout() {
+  const username = localStorage.getItem('user')
+  const response = await fetch(`${URL}/logout`, {
+    method: 'DELETE',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username })
+  })
+  const data = await response.json()
+
+  if (response.status !== 200) {
+    alert(data.message)
+    return
+  }
+
+  window.location.href = './login.html'
+}
+
 document.onload = handleOnLoad()
 form.onsubmit = handleOnSubmit
 select.onchange = handleOnSelectChange
+logout.onclick = handleOnClickLogout

@@ -6,6 +6,7 @@ const RouteUsers = require('./RouteUsers')
 const RouteUser = require('./RouteUser')
 const RouteRegister = require('./RouteRegister')
 const RouteLogin = require('./RouteLogin')
+const RouteLogout = require('./RouteLogout')
 
 module.exports = {
   RouteAction,
@@ -15,5 +16,6 @@ module.exports = {
   RouteUsers,
   RouteUser,
   RouteRegister,
-  RouteLogin
+  RouteLogin,
+  RouteLogout
 }

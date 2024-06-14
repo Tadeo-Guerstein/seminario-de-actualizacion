@@ -5,6 +5,7 @@ const tbody = document.querySelector('tbody')
 const inputAction = document.getElementById('accion')
 const select = document.querySelector('select')
 const groupSelected = document.getElementById('selected')
+const logout = document.getElementById('logout')
 
 async function getGrupos() {
   const response = await fetch(`${URL}/groups`)
@@ -91,6 +92,25 @@ function handleOnSelectChange() {
   }
 }
 
+async function handleOnClickLogout() {
+  const username = localStorage.getItem('user')
+  const response = await fetch(`${URL}/logout`, {
+    method: 'DELETE',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username })
+  })
+  const data = await response.json()
+
+  if (response.status !== 200) {
+    alert(data.message)
+    return
+  }
+
+  window.location.href = './login.html'
+}
+
 document.onload = handleOnLoad()
 form.onsubmit = handleOnSubmit
 select.onchange = handleOnSelectChange
+logout.onclick = handleOnClickLogout

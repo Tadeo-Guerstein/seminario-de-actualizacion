@@ -138,7 +138,12 @@ module.exports = {
   },
   register: async (username, password) => {
     try {
-      await connection.execute('INSERT INTO users_logged (username, password) VALUES (?, ?)', [username, password])
+      const [response] = await connection.execute('INSERT INTO users (username, password) VALUES (?, ?)', [
+        username,
+        password
+      ])
+      const { insertId } = { ...response }
+      await connection.execute('INSERT INTO session (id_user, logged) VALUES (?, ?)', [insertId, 1])
     } catch (error) {
       console.info('error', error)
       return [{ data: 'error', message: error }]
@@ -146,7 +151,7 @@ module.exports = {
   },
   userExists: async (username) => {
     try {
-      const [userExists] = await connection.execute('SELECT * FROM users_logged WHERE username = ?;', [username])
+      const [userExists] = await connection.execute('SELECT * FROM users WHERE username = ?;', [username])
       return userExists.length > 0
     } catch (error) {
       console.info('error', error)
@@ -155,11 +160,26 @@ module.exports = {
   },
   login: async (username, password) => {
     try {
-      const [userExists] = await connection.execute('SELECT * FROM users_logged WHERE username = ? AND password = ?;', [
+      const [userExists] = await connection.execute('SELECT * FROM users WHERE username = ? AND password = ?;', [
         username,
         password
       ])
-      return userExists.length > 0
+      if (userExists.length > 0) {
+        await connection.execute('UPDATE session SET logged = ? WHERE id_user = ?', [1, userExists[0].id])
+        return true
+      }
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
+  },
+  logout: async (username) => {
+    try {
+      const [userExists] = await connection.execute('SELECT * FROM users WHERE username = ?;', [username])
+      if (userExists.length > 0) {
+        await connection.execute('UPDATE session SET logged = ? WHERE id_user = ?', [0, userExists[0].id])
+        return true
+      }
     } catch (error) {
       console.info('error', error)
       return [{ data: 'error', message: error }]

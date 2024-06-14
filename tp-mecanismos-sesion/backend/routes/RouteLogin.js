@@ -20,7 +20,6 @@ const RouteLogin = async (req, res) => {
       return
     }
 
-    await SQL.register(username, password)
     await SQL.closeConnection()
     res.status(200).send({ data: 'ok' })
   } catch (error) {

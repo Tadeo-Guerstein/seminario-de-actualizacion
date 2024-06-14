@@ -42,7 +42,7 @@ async function handleSubmit(event) {
     errorLabelUser.innerText = data.message
     return
   }
-
+  localStorage.setItem('user', user)
   window.location.href = './users.html'
 }
 

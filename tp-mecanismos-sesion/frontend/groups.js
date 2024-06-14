@@ -4,6 +4,7 @@ const emptyText = document.getElementById('empty-text')
 const form = document.querySelector('form')
 const inputGroup = document.getElementById('grupo')
 const tbody = document.querySelector('tbody')
+const logout = document.getElementById('logout')
 
 async function getGrupos() {
   const response = await fetch(`${URL}/groups`)
@@ -43,5 +44,24 @@ async function handleOnSubmit() {
   })
 }
 
+async function handleOnClickLogout() {
+  const username = localStorage.getItem('user')
+  const response = await fetch(`${URL}/logout`, {
+    method: 'DELETE',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username })
+  })
+  const data = await response.json()
+
+  if (response.status !== 200) {
+    alert(data.message)
+    return
+  }
+
+  window.location.href = './login.html'
+}
+
 document.onload = handleOnLoad()
 form.onsubmit = handleOnSubmit
+logout.onclick = handleOnClickLogout
