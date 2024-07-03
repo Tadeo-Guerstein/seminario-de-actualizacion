@@ -39,10 +39,15 @@ async function handleOnLoad() {
       const tBodyCellId = tBodyRow.insertCell()
       const tBodyCellName = tBodyRow.insertCell()
       const tBodyCellGroup = tBodyRow.insertCell()
+      const tBodyCellEstado = tBodyRow.insertCell()
 
       tBodyCellId.innerText = i.id
-      tBodyCellName.innerText = i.name
+      tBodyCellName.innerText = i.username
       tBodyCellGroup.innerText = i.groups?.join?.(', ') || 'Sin grupo'
+      tBodyCellEstado.innerText = 'Activo'
+      if (!i.isLogged) {
+        tBodyCellEstado.innerText = 'Inactivo'
+      }
     })
     return
   }
