@@ -16,7 +16,7 @@ const RouteRegister = async (req, res) => {
     const userExists = await SQL.userExists(username)
     if (userExists) {
       await SQL.closeConnection()
-      res.status(403).send({ message: 'Usuario ya existe' })
+      res.status(403).send({ data: { message: 'Usuario ya existe' } })
       return
     }
 
@@ -26,7 +26,7 @@ const RouteRegister = async (req, res) => {
     res.status(200).send({ data: { isAdmin, idUser } })
   } catch (error) {
     console.info(error)
-    res.status(500).send({ message: 'Internal server error' })
+    res.status(500).send({ data: { message: 'Internal server error' } })
   }
 }
 
