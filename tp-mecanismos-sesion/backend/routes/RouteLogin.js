@@ -13,15 +13,16 @@ const RouteLogin = async (req, res) => {
     }
 
     await SQL.initConnection().then()
-    const userExists = await SQL.login(username, password)
-    if (!userExists) {
+    const user = await SQL.login(username, password)
+    if (!user) {
       await SQL.closeConnection()
       res.status(403).send({ message: 'Usuario o contraseña son incorrectos' })
       return
     }
 
+    const isAdmin = await SQL.admin(user.id)
     await SQL.closeConnection()
-    res.status(200).send({ data: 'ok' })
+    res.status(200).send({ data: { isAdmin, idUser: user.id } })
   } catch (error) {
     console.info(error)
     res.status(500).send({ message: 'Internal server error' })

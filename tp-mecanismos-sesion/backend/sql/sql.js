@@ -144,6 +144,7 @@ module.exports = {
       ])
       const { insertId } = { ...response }
       await connection.execute('INSERT INTO session (id_user, logged) VALUES (?, ?)', [insertId, 1])
+      return insertId
     } catch (error) {
       console.info('error', error)
       return [{ data: 'error', message: error }]
@@ -160,13 +161,13 @@ module.exports = {
   },
   login: async (username, password) => {
     try {
-      const [userExists] = await connection.execute('SELECT * FROM users WHERE username = ? AND password = ?;', [
+      const [user] = await connection.execute('SELECT * FROM users WHERE username = ? AND password = ?;', [
         username,
         password
       ])
-      if (userExists.length > 0) {
-        await connection.execute('UPDATE session SET logged = ? WHERE id_user = ?', [1, userExists[0].id])
-        return true
+      if (user.length > 0) {
+        await connection.execute('UPDATE session SET logged = ? WHERE id_user = ?', [1, user[0].id])
+        return user[0]
       }
     } catch (error) {
       console.info('error', error)
@@ -175,11 +176,20 @@ module.exports = {
   },
   logout: async (username) => {
     try {
-      const [userExists] = await connection.execute('SELECT * FROM users WHERE username = ?;', [username])
-      if (userExists.length > 0) {
-        await connection.execute('UPDATE session SET logged = ? WHERE id_user = ?', [0, userExists[0].id])
+      const [user] = await connection.execute('SELECT * FROM users WHERE username = ?;', [username])
+      if (user.length > 0) {
+        await connection.execute('UPDATE session SET logged = ? WHERE id_user = ?', [0, user[0].id])
         return true
       }
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
+  },
+  admin: async (idUser) => {
+    try {
+      const [user] = await connection.execute('SELECT * FROM group_user WHERE id_user = ? AND id_group = 1;', [idUser])
+      return user.length > 0
     } catch (error) {
       console.info('error', error)
       return [{ data: 'error', message: error }]

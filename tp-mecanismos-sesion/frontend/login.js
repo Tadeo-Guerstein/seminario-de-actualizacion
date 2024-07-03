@@ -33,7 +33,7 @@ async function handleSubmit(event) {
     body: JSON.stringify({ username: user, password: pass })
   })
 
-  const data = await response.json()
+  const { data } = await response.json()
 
   if (response.status !== 200) {
     password.className += ' border-danger'
@@ -42,8 +42,14 @@ async function handleSubmit(event) {
     errorLabelUser.innerText = data.message
     return
   }
-  localStorage.setItem('user', user)
-  window.location.href = './users.html'
+
+  localStorage.setItem('data', data)
+
+  if (data.isAdmin) {
+    window.location.href = './users.html'
+    return
+  }
+  window.location.href = './page.html'
 }
 
 function handleInputFocus() {

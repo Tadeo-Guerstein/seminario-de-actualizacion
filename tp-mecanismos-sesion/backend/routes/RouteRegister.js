@@ -20,9 +20,10 @@ const RouteRegister = async (req, res) => {
       return
     }
 
-    await SQL.register(username, password)
+    const idUser = await SQL.register(username, password)
+    const isAdmin = await SQL.admin(idUser)
     await SQL.closeConnection()
-    res.status(200).send({ data: 'ok' })
+    res.status(200).send({ data: { isAdmin, idUser } })
   } catch (error) {
     console.info(error)
     res.status(500).send({ message: 'Internal server error' })
