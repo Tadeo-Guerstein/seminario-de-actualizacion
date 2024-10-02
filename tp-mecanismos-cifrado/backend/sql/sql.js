@@ -27,6 +27,15 @@ module.exports = {
       return [{ data: 'error', message: error }]
     }
   },
+  getUserByID: async (idUser) => {
+    try {
+      const [user] = await connection.execute('SELECT * FROM users WHERE id = ?;', [idUser])
+      return user
+    } catch (error) {
+      console.info('error', error)
+      return [{ data: 'error', message: error }]
+    }
+  },
   getUsersGroup: async () => {
     try {
       const [response] = await connection.execute('CALL GetUsersGroup();')

@@ -9,6 +9,7 @@ const {
   RouteGroups,
   RouteUser,
   RouteUsers,
+  RouteUserId,
   RouteRegister,
   RouteLogin,
   RouteLogout
@@ -17,6 +18,7 @@ const {
 app.use(cors())
 app.use(express.json())
 
+app.get('/user/:idUser', RouteUserId)
 app.get('/users', RouteUsers)
 app.get('/groups', RouteGroups)
 app.get('/actions', RouteActions)
