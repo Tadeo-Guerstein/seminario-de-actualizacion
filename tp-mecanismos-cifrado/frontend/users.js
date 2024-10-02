@@ -109,7 +109,7 @@ async function handleOnClickLogout() {
     return
   }
 
-  // window.location.href = './login.html'
+  window.location.href = './login.html'
 }
 
 document.onload = handleOnLoad()
