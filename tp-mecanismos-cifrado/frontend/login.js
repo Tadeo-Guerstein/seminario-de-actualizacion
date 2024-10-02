@@ -43,7 +43,7 @@ async function handleSubmit(event) {
     return
   }
 
-  localStorage.setItem('data', data)
+  localStorage.setItem('user', JSON.stringify(data))
 
   if (data.isAdmin) {
     window.location.href = './users.html'

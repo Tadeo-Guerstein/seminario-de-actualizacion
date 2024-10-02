@@ -174,9 +174,9 @@ module.exports = {
       return [{ data: 'error', message: error }]
     }
   },
-  logout: async (username) => {
+  logout: async (id) => {
     try {
-      const [user] = await connection.execute('SELECT * FROM users WHERE username = ?;', [username])
+      const [user] = await connection.execute('SELECT * FROM users WHERE id = ?;', [id])
       if (user.length > 0) {
         await connection.execute('UPDATE session SET logged = ? WHERE id_user = ?', [0, user[0].id])
         return true

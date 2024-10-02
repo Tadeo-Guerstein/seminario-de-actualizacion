@@ -3,10 +3,10 @@ const SQL = require('../sql')
 const RouteLogout = async (req, res) => {
   try {
     const { body } = req
-    const { username } = body
+    const { idUser } = body
 
     await SQL.initConnection().then()
-    const userExists = await SQL.logout(username)
+    const userExists = await SQL.logout(idUser)
     if (!userExists) {
       await SQL.closeConnection()
       res.status(400).send({ message: 'Hubo un error al desloguear!' })

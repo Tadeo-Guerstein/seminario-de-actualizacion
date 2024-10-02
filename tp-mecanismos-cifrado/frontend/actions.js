@@ -93,12 +93,12 @@ function handleOnSelectChange() {
 }
 
 async function handleOnClickLogout() {
-  const username = localStorage.getItem('user')
+  const { idUser } = JSON.parse(localStorage.getItem('user'))
   const response = await fetch(`${URL}/logout`, {
     method: 'DELETE',
     mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username })
+    body: JSON.stringify({ idUser })
   })
   const data = await response.json()
 
