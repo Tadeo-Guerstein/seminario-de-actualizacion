@@ -208,7 +208,7 @@ async function getUsers() {
 }
 
 async function handleOnClickLogout() {
-  const { idUser } = JSON.stringify(localStorage.getItem('user'))
+  const { idUser } = JSON.parse(localStorage.getItem('user'))
   const response = await fetch(`${URL}/logout`, {
     method: 'DELETE',
     mode: 'cors',
