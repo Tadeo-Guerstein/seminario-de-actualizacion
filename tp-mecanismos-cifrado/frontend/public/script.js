@@ -26,7 +26,7 @@ async function handleSubmit(event) {
     return
   }
 
-  const response = await fetch(`${URL}/login`, {
+  const response = await fetch(`${URL}/register`, {
     method: 'POST',
     mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
@@ -43,13 +43,9 @@ async function handleSubmit(event) {
     return
   }
 
-  localStorage.setItem('user', JSON.stringify(data))
+  localStorage.setItem('user', data)
 
-  if (data.isAdmin) {
-    window.location.href = './users.html'
-    return
-  }
-  window.location.href = './page.html'
+  window.location.href = 'http://localhost:8000/login'
 }
 
 function handleInputFocus() {

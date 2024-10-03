@@ -1,19 +1,11 @@
 const URL = 'http://localhost:8080'
 const tableContainer = document.querySelector('.table-responsive')
-const emptyText = document.getElementById('empty-text')
-const groupSelected = document.getElementById('selected')
-const select = document.querySelector('select')
 const form = document.querySelector('form')
 const tbody = document.querySelector('tbody')
-const inputUser = document.getElementById('username')
+const inputAction = document.getElementById('accion')
+const select = document.querySelector('select')
+const groupSelected = document.getElementById('selected')
 const logout = document.getElementById('logout')
-
-async function getUsers() {
-  const response = await fetch(`${URL}/users`)
-  if (response.status === 200) {
-    return await response.json()
-  }
-}
 
 async function getGrupos() {
   const response = await fetch(`${URL}/groups`)
@@ -22,8 +14,24 @@ async function getGrupos() {
   }
 }
 
+async function getAcciones() {
+  const response = await fetch(`${URL}/actions`)
+  if (response.status === 200) {
+    return await response.json()
+  }
+}
+
+async function setAccion(name, grupos) {
+  await fetch(`${URL}/actions`, {
+    method: 'POST',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nombre: name, grupos })
+  })
+}
+
 async function handleOnLoad() {
-  const { data: users } = await getUsers()
+  const { data: acciones } = await getAcciones()
   const { data: grupos } = await getGrupos()
   if (grupos.length > 0) {
     grupos.forEach((i) => {
@@ -33,42 +41,32 @@ async function handleOnLoad() {
       select.add(option)
     })
   }
-  if (users.length > 0) {
-    users.forEach((i) => {
+  if (acciones.length > 0) {
+    acciones.forEach((i) => {
       const tBodyRow = tbody.insertRow()
       const tBodyCellId = tBodyRow.insertCell()
       const tBodyCellName = tBodyRow.insertCell()
-      const tBodyCellGroup = tBodyRow.insertCell()
-      const tBodyCellEstado = tBodyRow.insertCell()
-
+      const tBodyCellGroups = tBodyRow.insertCell()
       tBodyCellId.innerText = i.id
-      tBodyCellName.innerText = i.username
-      tBodyCellGroup.innerText = i.groups?.join?.(', ') || 'Sin grupo'
-      tBodyCellEstado.innerText = 'Activo'
-      if (!i.isLogged) {
-        tBodyCellEstado.innerText = 'Inactivo'
-      }
+      tBodyCellName.innerText = i.name.toUpperCase()
+      tBodyCellGroups.innerText = i.groups?.join(', ') || 'Sin grupo'
     })
     return
   }
   const span = document.createElement('span')
-  span.id = 'empty-text'
   span.innerText = 'No hay datos para listar'
   tableContainer.appendChild(span)
 }
 
-function handleOnSubmit(event) {
+async function handleOnSubmit(event) {
   // event.preventDefault()
-  const name = inputUser.value
+  const name = inputAction.value
   const optionsSelected = [...groupSelected.children].map((i) => {
     return parseInt(i.id)
   })
-  fetch(`${URL}/users`, {
-    method: 'POST',
-    mode: 'cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nombre: name, grupos: optionsSelected })
-  })
+  if (name) {
+    await setAccion(name, optionsSelected)
+  }
 }
 
 function handleOnClickButton(event) {
@@ -109,7 +107,7 @@ async function handleOnClickLogout() {
     return
   }
 
-  window.location.href = './login.html'
+  window.location.href = 'http://localhost:8000/login'
 }
 
 document.onload = handleOnLoad()

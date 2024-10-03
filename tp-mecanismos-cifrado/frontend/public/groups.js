@@ -59,7 +59,7 @@ async function handleOnClickLogout() {
     return
   }
 
-  window.location.href = './login.html'
+  window.location.href = 'http://localhost:8000/login'
 }
 
 document.onload = handleOnLoad()

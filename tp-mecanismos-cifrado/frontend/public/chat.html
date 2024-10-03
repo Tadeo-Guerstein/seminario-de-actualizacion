@@ -34,16 +34,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="./users.html">Users</a>
+              <a class="nav-link" href="http://localhost:8000/users">Users</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./groups.html">Groups</a>
+              <a class="nav-link" href="http://localhost:8000/groups">Groups</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./actions.html">Actions</a>
+              <a class="nav-link" href="http://localhost:8000/actions">Actions</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="./actions.html">Chat</a>
+              <a class="nav-link active" href="http://localhost:8000/chat">Chat</a>
             </li>
             <li class="nav-item d-flex align-items-center">
               <button type="button" class="btn p-2 fs-6 border-0" id="logout">Salir</button>
@@ -53,40 +53,33 @@
       </div>
     </nav>
 
-    <div class="d-flex" style="height: 94vh">
-      <div class="bg-body-secondary p-2 border" style="overflow: auto; width: 10%">
-        <ul class="list-group gap-2">
-          <li class="list-group-item">User 1</li>
-          <li class="list-group-item">User 2</li>
-          <li class="list-group-item">User 3</li>
-          <li class="list-group-item">User 4</li>
-          <li class="list-group-item">User 5</li>
-        </ul>
-      </div>
-      <div class="d-flex flex-column w-100 justify-content-between bg-body-tertiary mh-25">
-        <ul class="list-group gap-2 p-3" style="overflow: auto; height: 100%">
-          <div class="card" style="width: 30%">
-            <div class="card-body">
-              <h5 class="card-title">User</h5>
-              <p class="card-text">
-                Some quick example text to build on the card title and make up the bulk of the card's content.
-              </p>
-            </div>
-          </div>
-        </ul>
-        <form class="bg-body-secondary w-100 p-3 border">
-          <div class="d-flex flex-row justify-content-between me-5 gap-5">
-            <input
-              type="text"
-              class="form-control text-secondary d-flex"
-              id="text-input"
-              placeholder="Mensaje"
-              autofocus />
-            <button type="button" class="btn btn-secondary">Enviar</button>
-          </div>
-        </form>
+    <div id="start-chat-container">
+      <div class="d-flex align-items-center justify-content-center" style="height: 94vh">
+        <button class="btn btn-secondary w-25" id="start-chat">Ingresar al chat</button>
       </div>
     </div>
-    <script src="scriptChat.js"></script>
+
+    <div id="chat-container" hidden>
+      <div class="d-flex" style="height: 94vh">
+        <div class="bg-body-secondary p-2 border" style="overflow: auto; width: 10%">
+          <ul class="list-group" id="users-list"></ul>
+        </div>
+        <div class="d-flex flex-column w-100 justify-content-between bg-body-tertiary mh-25">
+          <div class="list-group gap-2 p-3" style="overflow: auto; height: 100%" id="messages"></div>
+          <form class="bg-body-secondary w-100 p-3 border">
+            <div class="d-flex flex-row justify-content-between me-5 gap-5">
+              <input
+                type="text"
+                class="form-control text-secondary d-flex"
+                id="text-input"
+                placeholder="Mensaje"
+                autofocus />
+              <button type="button" class="btn btn-secondary" id="submit-button">Enviar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="chat.js"></script>
   </body>
 </html>
