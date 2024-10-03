@@ -229,6 +229,15 @@ async function handleOnClickLogout() {
 }
 
 async function handleLoadWindow() {
+  const { isAdmin } = JSON.parse(localStorage.getItem('user'))
+  if (!isAdmin) {
+    const navChilds = [...document.getElementsByClassName('navbar-nav')[0].children]
+    navChilds.forEach((i, index) => {
+      if (index < navChilds.length - 1) {
+        document.getElementsByClassName('navbar-nav')[0].removeChild(i)
+      }
+    })
+  }
   const { data: users } = await getUsers()
   if (users.length > 0) {
     setUsers(users)
