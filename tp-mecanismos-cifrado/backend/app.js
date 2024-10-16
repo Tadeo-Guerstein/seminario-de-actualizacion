@@ -26,6 +26,11 @@ app.post('/actions', RouteAction)
 app.post('/groups', RouteGroup)
 app.post('/users', RouteUser)
 app.post('/register', RouteRegister)
+app.post('/biometric', (req, res) => {
+  print(req.body)
+
+  res.status(200).send({ message: 'anashe' })
+})
 app.post('/login', RouteLogin)
 app.delete('/logout', RouteLogout)
 
