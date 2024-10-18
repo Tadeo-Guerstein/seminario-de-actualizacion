@@ -32,12 +32,11 @@ def index(data: BiometricData):
         img_binary = base64.b64decode(img_data)
         img_array = np.frombuffer(img_binary, dtype=np.uint8)
         image = cv2.imdecode(img_array, cv2.IMREAD_UNCHANGED)
-        img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
 
-        cv2.imshow('Decoded Image', img_rgb)  # Use img_rgb for RGB display
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        # cv2.imwrite(f"./bio_ref/user_{data.idUser}.png", img_rgb)
+        # cv2.imshow('Decoded Image', image)  # Use img_rgb for RGB display
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        cv2.imwrite(f"./bio_ref/user_{data.idUser}.png", image)
         return {"message": "success"}
     except ValueError:
         print("fuck of mate")
