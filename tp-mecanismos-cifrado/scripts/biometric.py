@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import base64
 import numpy as np
+import os
 
 import cv2
 from deepface import DeepFace
@@ -23,21 +24,28 @@ class BiometricData(BaseModel):
 
 @app.post('/biometric')
 def index(data: BiometricData):
-    try:
-        image_ref = cv2.imread(f"./bio_ref/user_{data.idUser}.png")
-        if(image_ref):
-            pass
+    img_data = data.biometric_ref.split(",")[-1]
+    img_binary = base64.b64decode(img_data)
+    img_array = np.frombuffer(img_binary, dtype=np.uint8)
+    image = cv2.imdecode(img_array, cv2.IMREAD_UNCHANGED)
 
-        img_data = data.biometric_ref.split(",")[-1]
-        img_binary = base64.b64decode(img_data)
-        img_array = np.frombuffer(img_binary, dtype=np.uint8)
-        image = cv2.imdecode(img_array, cv2.IMREAD_UNCHANGED)
+    path_image = f"./bio_ref/user_{data.idUser}.png"
+    path_image_scan = f"./bio_ref/user_{data.idUser}_scan.png"
 
-        # cv2.imshow('Decoded Image', image)  # Use img_rgb for RGB display
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        cv2.imwrite(f"./bio_ref/user_{data.idUser}.png", image)
+    if(not os.path.exists(path_image)):
+        cv2.imwrite(path_image, image)
         return {"message": "success"}
-    except ValueError:
-        print("fuck of mate")
-
+    
+    cv2.imwrite(path_image_scan, image)
+    
+    try:
+        result = DeepFace.verify(path_image, path_image_scan)
+        os.remove(path_image_scan)
+        print('result', result)
+        if(result['verified']):
+            return {"message": "success", "status": "200"}
+        else:
+            return {"message": "not valid", "status": "403"}
+    except ValueError as e:
+        os.remove(path_image_scan)
+        return {"error": str(e)}
